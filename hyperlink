@@ -1,0 +1,28 @@
+#!/bin/bash
+# REF: https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+
+if [[ $# == 0 || $# > 2 ]]; then
+  echo "USAGE: $ hyperlink <link> [<text>]"
+  exit 2
+fi
+
+LINK=$1
+TEXT=$2
+
+if [[ -z ${TEXT} ]]; then
+  TEXT=${LINK}
+fi
+
+OSC="\e]"
+ST="\e\\"
+BELL="\a"
+
+if [[ -n "${TMUX}" ]]; then
+  START_ESC="\ePtmux;\e${OSC}8;;${LINK}${BELL}${ST}"
+  END_ESC="\ePtmux;\e${OSC}8;;${BELL}${ST}"
+  printf "${START_ESC}"
+  printf "${TEXT}"
+  printf "${END_ESC}"
+else
+  printf "${OSC}8;;${LINK}${ST}${TEXT}${OSC}8;;${ST}"
+fi
