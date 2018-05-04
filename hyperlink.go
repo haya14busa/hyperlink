@@ -1,3 +1,4 @@
+// Pacakge hyperlink is utility of hyperlink (OSC 8) feature.
 package hyperlink
 
 import (
@@ -7,12 +8,13 @@ import (
 )
 
 const (
-	ESC  = "\033"
-	OSC  = ESC + "]"
-	ST   = "\033\\"
-	BELL = "\a"
+	esc  = "\033"
+	osc  = esc + "]"
+	st   = esc + "\\"
+	bell = "\a"
 )
 
+// Write writes OSC 8 sequence (hyperlink).
 func Write(w io.Writer, link, text string) error {
 	ew := &errWriter{w: w}
 	ew.write(wrapOSC(osc8Start(link)))
@@ -21,23 +23,23 @@ func Write(w io.Writer, link, text string) error {
 	return ew.err
 }
 
-func wrapOSC(esc string) string {
+func wrapOSC(s string) string {
 	if os.Getenv("TMUX") != "" {
-		return wrapOSCForTmux(esc)
+		return wrapOSCForTmux(s)
 	}
-	return esc
+	return s
 }
 
-func wrapOSCForTmux(esc string) string {
-	return ESC + "Ptmux;" + ESC + esc + ST
+func wrapOSCForTmux(s string) string {
+	return esc + "Ptmux;" + esc + s + st
 }
 
 func osc8Start(link string) string {
-	return OSC + "8" + ";;" + link + BELL
+	return osc + "8" + ";;" + link + bell
 }
 
 func osc8End() string {
-	return OSC + "8" + ";;" + BELL
+	return osc + "8" + ";;" + bell
 }
 
 // REF: https://blog.golang.org/errors-are-values
