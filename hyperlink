@@ -18,11 +18,10 @@ ST="\e\\"
 BELL="\a"
 
 if [[ -n "${TMUX}" ]]; then
-  START_ESC="\ePtmux;\e${OSC}8;;${LINK}${BELL}${ST}"
-  END_ESC="\ePtmux;\e${OSC}8;;${BELL}${ST}"
-  printf "${START_ESC}"
+  # Need to print separately.
+  printf "\ePtmux;\e${OSC}8;;${LINK}${BELL}${ST}"
   printf "${TEXT}"
-  printf "${END_ESC}"
+  printf "\ePtmux;\e${OSC}8;;${BELL}${ST}"
 else
   printf "${OSC}8;;${LINK}${ST}${TEXT}${OSC}8;;${ST}"
 fi
